@@ -1,84 +1,96 @@
 import 'package:get/get.dart';
-import 'package:pioneer_alpha_task/common/app_images/app_images.dart';
-import 'package:intl/intl.dart';
+import 'package:pioneer_alpha_task/app/data/api.dart';
+import 'package:pioneer_alpha_task/app/data/base_client.dart';
+import '../../../../common/helper/local_store.dart';
+import '../model/repository.dart';
+import '../views/repository_details_view.dart';
 
 class HomeController extends GetxController {
-  var repoList = <Map<String, dynamic>>[].obs;
-  var selectedValue = ''.obs;
-
-  void updateValue(String value) {
-    selectedValue.value = value;
-    _sortRepoList(value);
-  }
+  final repoList = <Repository>[].obs;
+  final isLoading = false.obs;
+  final selectedValue = ''.obs;
+  final isAscending = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    _loadData();
+    // Initialize sorting preferences from local storage
+    selectedValue.value = LocalStorage.getData(key: 'sortBy') ?? 'Stars';
+    isAscending.value = LocalStorage.getData(key: 'isAscending') ?? false;
+    loadRepositories();
   }
 
-  void _loadData() {
-    repoList.assignAll([
-      {
-        'imageUrl': AppImages.profileImage,
-        'name': 'flutter',
-        'owner': 'flutter',
-        'rating': '11171',
-        'timestamp': '06-26-2025 15:38',
-      },
-      {
-        'imageUrl': AppImages.profileImage,
-        'name': 'rustdesk',
-        'owner': 'flutter',
-        'rating': '17171',
-        'timestamp': '06-27-2025 14:38',
-      },
-      {
-        'imageUrl': AppImages.profileImage,
-        'name': 'immich-app',
-        'owner': 'flutter',
-        'rating': '71171',
-        'timestamp': '06-25-2025 16:38',
-      },
-      {
-        'imageUrl': AppImages.profileImage,
-        'name': 'AppFlowy',
-        'owner': 'flutter',
-        'rating': '17171',
-        'timestamp': '05-27-2025 12:38',
-      },
-      {
-        'imageUrl': AppImages.profileImage,
-        'name': 'localend',
-        'owner': 'flutter',
-        'rating': '171171',
-        'timestamp': '06-27-2025 14:40',
-      },
-    ]);
-  }
-
-  void _sortRepoList(String sortBy) {
-    if (sortBy == 'Stars') {
-      repoList.sort((a, b) {
-        int aRating = int.tryParse(a['rating'] ?? '0') ?? 0;
-        int bRating = int.tryParse(b['rating'] ?? '0') ?? 0;
-        return bRating.compareTo(aRating); // Descending order
-      });
-    } else if (sortBy == 'Last Updated') {
-      repoList.sort((a, b) {
-        DateTime aTime = _parseDate(a['timestamp'] ?? '');
-        DateTime bTime = _parseDate(b['timestamp'] ?? '');
-        return bTime.compareTo(aTime); // Descending order
-      });
-    }
-    repoList.refresh();
-  }
-
-  DateTime _parseDate(String dateStr) {
+  /// Loads repositories from the GitHub API or cache
+  Future<void> loadRepositories() async {
+    isLoading.value = true;
     try {
-      return DateFormat('MM-dd-yyyy HH:mm').parse(dateStr);
+      final response = await BaseClient.getRequest(
+        api: Api.getRepoList,
+        headers: {'Accept': 'application/vnd.github.v3+json'},
+      );
+
+      final data = await BaseClient.handleResponse(response);
+      final List<dynamic> items = data['items'];
+      repoList.value = items.map((item) => Repository.fromJson(item)).toList();
+
+      // Save fetched repositories to local storage
+      await LocalStorage.saveData(
+        key: 'repos',
+        data: repoList.map((repo) => repo.toJson()).toList(),
+      );
     } catch (e) {
-      return DateTime(1970);
+      // Fallback to cached data if API call fails
+      final cachedRepos = LocalStorage.getData(key: 'repos');
+      if (cachedRepos != null) {
+        repoList.value = (cachedRepos as List)
+            .map((item) => Repository.fromJson(item))
+            .toList();
+        if (repoList.isEmpty) {
+          Get.snackbar('Error', 'No internet connection. Showing cached data.');
+        }
+      } else {
+        Get.snackbar('Error', e.toString());
+      }
+    } finally {
+      isLoading.value = false;
+      sortRepositories();
     }
+  }
+
+  /// Sorts repositories based on selected criteria (Stars or Last Updated)
+  void sortRepositories() {
+    repoList.sort((a, b) {
+      if (selectedValue.value == 'Stars') {
+        return isAscending.value
+            ? a.stargazersCount.compareTo(b.stargazersCount)
+            : b.stargazersCount.compareTo(a.stargazersCount);
+      } else {
+        return isAscending.value
+            ? a.updatedAt.compareTo(b.updatedAt)
+            : b.updatedAt.compareTo(a.updatedAt);
+      }
+    });
+
+    // Save sorting preferences to local storage
+    LocalStorage.saveData(key: 'sortBy', data: selectedValue.value);
+    LocalStorage.saveData(key: 'isAscending', data: isAscending.value);
+    update();
+  }
+
+  /// Updates the sorting criteria and triggers re-sorting
+  void updateValue(String newValue) {
+    selectedValue.value = newValue;
+    sortRepositories();
+  }
+
+  /// Toggles the sort order (ascending/descending) and re-sorts
+  void toggleSortOrder() {
+    isAscending.value = !isAscending.value;
+    sortRepositories();
+  }
+
+  /// Navigates to the repository details page
+  void navigateToDetails(Repository repository) {
+    Get.to(() => const RepositoryDetailsView(), arguments: repository);
   }
 }

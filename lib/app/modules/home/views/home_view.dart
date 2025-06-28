@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pioneer_alpha_task/app/modules/home/views/repository_details_view.dart';
+import 'package:intl/intl.dart';
 import 'package:pioneer_alpha_task/common/app_color/app_colors.dart';
 import 'package:pioneer_alpha_task/common/size_box/custom_sizebox.dart';
-
 import '../../../../common/app_text_style/styles.dart';
 import '../../../../common/helper/repo_container.dart';
 import '../controllers/home_controller.dart';
@@ -42,7 +42,6 @@ class HomeView extends GetView<HomeController> {
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       color: AppColors.greyLight,
-                      //border: Border.all(color: Colors.blue),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: DropdownButtonHideUnderline(
@@ -77,13 +76,23 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                 ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    controller.toggleSortOrder();
+                  },
+                  child: Icon(CupertinoIcons.arrow_up_arrow_down),
+                ),
               ],
             ),
-            sh8,
+            sh12,
             Expanded(
               child: Obx(() {
-                if (controller.repoList.isEmpty) {
+                if (controller.isLoading.value) {
                   return Center(child: CircularProgressIndicator());
+                }
+                if (controller.repoList.isEmpty) {
+                  return Center(child: Text('No repositories found'));
                 }
                 return ListView.builder(
                   shrinkWrap: true,
@@ -91,13 +100,14 @@ class HomeView extends GetView<HomeController> {
                   itemBuilder: (context, index) {
                     final repo = controller.repoList[index];
                     return RepoContainer(
-                      imageUrl: repo['imageUrl'] ?? '',
-                      name: repo['name'] ?? 'Unknown',
-                      owner: 'Owner: ${repo['owner'] ?? 'Unknown'}',
-                      rating: repo['rating'] ?? '0',
-                      timestamp: repo['timestamp'] ?? 'N/A',
+                      imageUrl: repo.owner.avatarUrl,
+                      name: repo.name,
+                      owner: 'Owner: ${repo.owner.login}',
+                      rating: repo.stargazersCount.toString(),
+                      timestamp:
+                          DateFormat('MM-dd-yyyy HH:mm').format(repo.updatedAt),
                       onTap: () {
-                        Get.to(() => RepositoryDetailsView());
+                        controller.navigateToDetails(repo);
                       },
                     );
                   },
