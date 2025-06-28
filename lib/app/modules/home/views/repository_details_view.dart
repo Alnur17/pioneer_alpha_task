@@ -86,15 +86,18 @@ class RepositoryDetailsView extends GetView {
                     children: [
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12,vertical: 14),
+                          height: 100,
+                          padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: AppColors.orangeLight,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Image.asset(AppImages.star,scale: 4,),
                                   sw5,
@@ -112,6 +115,7 @@ class RepositoryDetailsView extends GetView {
                       sw8,
                       Expanded(
                         child: Container(
+                          height: 100,
                           padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
@@ -119,14 +123,17 @@ class RepositoryDetailsView extends GetView {
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Image.asset(AppImages.clock,scale: 4,),
                                 sw5,
                                   Text('Updated',style: h4.copyWith(color: AppColors.green),),
                                 ],
                               ),
+                               sh5,
                                Text(
                                 '06-27-2025 12:18',
                                 style: h4.copyWith(color: AppColors.greenDark),
