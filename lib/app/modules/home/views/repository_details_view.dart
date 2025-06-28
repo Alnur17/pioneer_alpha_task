@@ -154,6 +154,7 @@
 //   }
 // }
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -182,9 +183,12 @@ class RepositoryDetailsView extends GetView {
             ? Colors.black12
             : AppColors.mainColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,color: themeController.isDarkMode.value
-              ? AppColors.white
-              : AppColors.black,),
+          icon: Icon(
+            Icons.arrow_back,
+            color: themeController.isDarkMode.value
+                ? AppColors.white
+                : AppColors.black,
+          ),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -203,10 +207,14 @@ class RepositoryDetailsView extends GetView {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(repository.owner.avatarUrl),
-                    backgroundColor: AppColors.white),
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: repository.owner.avatarUrl,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 sw12,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,25 +257,33 @@ class RepositoryDetailsView extends GetView {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Repository', style: h5.copyWith(color: themeController.isDarkMode.value
-                      ? AppColors.white
-                      : AppColors.blue,)),
+                  Text('Repository',
+                      style: h5.copyWith(
+                        color: themeController.isDarkMode.value
+                            ? AppColors.white
+                            : AppColors.blue,
+                      )),
                   Text(
                     repository.name,
-                    style: h3.copyWith(color: themeController.isDarkMode.value
-                        ? AppColors.white
-                        : AppColors.black,),
+                    style: h3.copyWith(
+                      color: themeController.isDarkMode.value
+                          ? AppColors.white
+                          : AppColors.black,
+                    ),
                   ),
                   sh8,
                   Text('Description',
-                      style: h5.copyWith(color: themeController.isDarkMode.value
-                          ? AppColors.white
-                          : AppColors.blue,)),
+                      style: h5.copyWith(
+                        color: themeController.isDarkMode.value
+                            ? AppColors.white
+                            : AppColors.blue,
+                      )),
                   Text(
                     repository.description,
-                    style: h5.copyWith(color: themeController.isDarkMode.value
-                        ? AppColors.white
-                        : AppColors.black100),
+                    style: h5.copyWith(
+                        color: themeController.isDarkMode.value
+                            ? AppColors.white
+                            : AppColors.black100),
                   ),
                   sh16,
                   Row(
