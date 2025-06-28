@@ -154,8 +154,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -163,6 +161,7 @@ import 'package:pioneer_alpha_task/common/app_images/app_images.dart';
 import 'package:pioneer_alpha_task/common/size_box/custom_sizebox.dart';
 import '../../../../common/app_color/app_colors.dart';
 import '../../../../common/app_text_style/styles.dart';
+import '../controllers/theme_controller.dart';
 import '../model/repository.dart';
 
 class RepositoryDetailsView extends GetView {
@@ -171,17 +170,31 @@ class RepositoryDetailsView extends GetView {
   @override
   Widget build(BuildContext context) {
     final Repository repository = Get.arguments as Repository;
+    final ThemeController themeController = Get.find();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: themeController.isDarkMode.value
+          ? Colors.black45
+          : AppColors.background,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: AppColors.mainColor,
+        backgroundColor: themeController.isDarkMode.value
+            ? Colors.black12
+            : AppColors.mainColor,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,color: themeController.isDarkMode.value
+              ? AppColors.white
+              : AppColors.black,),
           onPressed: () => Get.back(),
         ),
-        title: const Text('Repository Details'),
+        title: Text(
+          'Repository Details',
+          style: appBarStyle.copyWith(
+            color: themeController.isDarkMode.value
+                ? AppColors.white
+                : AppColors.black,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -191,20 +204,29 @@ class RepositoryDetailsView extends GetView {
             Row(
               children: [
                 CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(repository.owner.avatarUrl),
-                ),
-                const SizedBox(width: 12),
+                    radius: 40,
+                    backgroundImage: NetworkImage(repository.owner.avatarUrl),
+                    backgroundColor: AppColors.white),
+                sw12,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       repository.owner.login,
-                      style: h3.copyWith(fontSize: 18),
+                      style: h3.copyWith(
+                        fontSize: 20,
+                        color: themeController.isDarkMode.value
+                            ? AppColors.white
+                            : AppColors.black,
+                      ),
                     ),
                     Text(
                       'Repository Owner',
-                      style: h4.copyWith(color: AppColors.black100),
+                      style: h5.copyWith(
+                        color: themeController.isDarkMode.value
+                            ? AppColors.white
+                            : AppColors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -214,23 +236,38 @@ class RepositoryDetailsView extends GetView {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-                border: Border.all(color: AppColors.greyLight),
+                color: themeController.isDarkMode.value
+                    ? AppColors.greyDark
+                    : AppColors.white,
+                border: Border.all(
+                  color: themeController.isDarkMode.value
+                      ? AppColors.transparent
+                      : AppColors.greyLight,
+                ),
               ),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Repository', style: h5.copyWith(color: AppColors.blue)),
+                  Text('Repository', style: h5.copyWith(color: themeController.isDarkMode.value
+                      ? AppColors.white
+                      : AppColors.blue,)),
                   Text(
                     repository.name,
-                    style: h3,
+                    style: h3.copyWith(color: themeController.isDarkMode.value
+                        ? AppColors.white
+                        : AppColors.black,),
                   ),
                   sh8,
-                  Text('Description', style: h5.copyWith(color: AppColors.blue)),
+                  Text('Description',
+                      style: h5.copyWith(color: themeController.isDarkMode.value
+                          ? AppColors.white
+                          : AppColors.blue,)),
                   Text(
                     repository.description,
-                    style: h5.copyWith(color: AppColors.black100),
+                    style: h5.copyWith(color: themeController.isDarkMode.value
+                        ? AppColors.white
+                        : AppColors.black100),
                   ),
                   sh16,
                   Row(
@@ -238,7 +275,8 @@ class RepositoryDetailsView extends GetView {
                       Expanded(
                         child: Container(
                           height: 100,
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: AppColors.orangeLight,
@@ -252,12 +290,15 @@ class RepositoryDetailsView extends GetView {
                                 children: [
                                   Image.asset(AppImages.star, scale: 4),
                                   sw5,
-                                  Text('Stars', style: h4.copyWith(color: AppColors.chocolateColor)),
+                                  Text('Stars',
+                                      style: h4.copyWith(
+                                          color: AppColors.chocolateColor)),
                                 ],
                               ),
                               Text(
                                 repository.stargazersCount.toString(),
-                                style: h2.copyWith(color: AppColors.chocolateColor),
+                                style: h2.copyWith(
+                                    color: AppColors.chocolateColor),
                               ),
                             ],
                           ),
@@ -267,7 +308,8 @@ class RepositoryDetailsView extends GetView {
                       Expanded(
                         child: Container(
                           height: 100,
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: AppColors.greenLight,
@@ -281,12 +323,15 @@ class RepositoryDetailsView extends GetView {
                                 children: [
                                   Image.asset(AppImages.clock, scale: 4),
                                   sw5,
-                                  Text('Updated', style: h4.copyWith(color: AppColors.green)),
+                                  Text('Updated',
+                                      style:
+                                          h4.copyWith(color: AppColors.green)),
                                 ],
                               ),
                               sh5,
                               Text(
-                                DateFormat('MM-dd-yyyy HH:mm').format(repository.updatedAt),
+                                DateFormat('MM-dd-yyyy HH:mm')
+                                    .format(repository.updatedAt),
                                 style: h4.copyWith(color: AppColors.greenDark),
                               ),
                             ],

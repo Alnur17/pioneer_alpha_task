@@ -14,7 +14,6 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Initialize sorting preferences from local storage
     selectedValue.value = LocalStorage.getData(key: 'sortBy') ?? 'Stars';
     isAscending.value = LocalStorage.getData(key: 'isAscending') ?? false;
     loadRepositories();
@@ -33,13 +32,11 @@ class HomeController extends GetxController {
       final List<dynamic> items = data['items'];
       repoList.value = items.map((item) => Repository.fromJson(item)).toList();
 
-      // Save fetched repositories to local storage
       await LocalStorage.saveData(
         key: 'repos',
         data: repoList.map((repo) => repo.toJson()).toList(),
       );
     } catch (e) {
-      // Fallback to cached data if API call fails
       final cachedRepos = LocalStorage.getData(key: 'repos');
       if (cachedRepos != null) {
         repoList.value = (cachedRepos as List)
@@ -89,7 +86,6 @@ class HomeController extends GetxController {
     sortRepositories();
   }
 
-  /// Navigates to the repository details page
   void navigateToDetails(Repository repository) {
     Get.to(() => const RepositoryDetailsView(), arguments: repository);
   }
