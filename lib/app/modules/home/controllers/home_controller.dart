@@ -68,7 +68,6 @@ class HomeController extends GetxController {
       }
     });
 
-    // Save sorting preferences to local storage
     LocalStorage.saveData(key: 'sortBy', data: selectedValue.value);
     LocalStorage.saveData(key: 'isAscending', data: isAscending.value);
     update();

@@ -3,17 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const mainColor = Color(0xFFFFFFFF);
   static const background = Color(0xFFF9FDFF);
-  static const orangeLight = Color(0xFFFEFCE8);
-  static const logoBgColor = Color(0xFFECF7FF);
-  static const bottomNavbar = Color(0xffF9F9F9);
-  static const textColor = Color(0xff409E7A);
   static const chocolateColor = Color(0xff713F12);
-  static const blueTurquoise = Color(0xff00AEEF);
-  static const blurBack = Color(0x8D8D8D6B);
-  static const gradientColor = [Color(0xff63CCA4), Color(0xff409E7A)];
-  static const gradientColorBlue = [Color(0xff63B3ED), Color(0xff3182CE)];
-  static const gradientColorGrey = [Color(0xffE2E2E2), Color(0xffA0A19E)];
-  static const gradientColorGreen = [Color(0xff99ECCC), Color(0xff54B18D)];
 
   //fixed color
   static const transparent = Colors.transparent;
@@ -37,7 +27,7 @@ class AppColors {
   static const whiteDark = Color(0xffBEBEBE);
   static const primaryColor = Color(0xff409E7A);
   static const orange = Color(0xffff6200);
-  //static const orangeLight = Color(0xffFFAE35);
+  static const orangeLight = Color(0xFFFEFCE8);
   static const darkRed = Color(0xffC21A1E);
   static const red = Color(0xffff3c00);
   static const purple = Color(0xff5366BE);

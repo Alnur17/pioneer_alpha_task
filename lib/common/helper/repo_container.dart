@@ -35,17 +35,16 @@ class RepoContainer extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 8.0),
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
+          color: themeController.isDarkMode.value
+              ? AppColors.greyDark
+              : AppColors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
             color: themeController.isDarkMode.value
-                ? AppColors.greyDark
-                : AppColors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(
-              color: themeController.isDarkMode.value
-                  ? AppColors.transparent
-                  : AppColors.greyLight,
-            )
-
-            ),
+                ? AppColors.transparent
+                : AppColors.greyLight,
+          ),
+        ),
         child: Row(
           children: [
             ClipOval(
@@ -63,15 +62,20 @@ class RepoContainer extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: h3.copyWith(fontSize: 18,color: themeController.isDarkMode.value
-                        ? AppColors.white
-                        : AppColors.black,),
+                    style: h3.copyWith(
+                      fontSize: 18,
+                      color: themeController.isDarkMode.value
+                          ? AppColors.white
+                          : AppColors.black,
+                    ),
                   ),
                   Text(
                     owner,
-                    style: h5.copyWith(color: themeController.isDarkMode.value
-                        ? AppColors.white
-                        : AppColors.black,),
+                    style: h5.copyWith(
+                      color: themeController.isDarkMode.value
+                          ? AppColors.white
+                          : AppColors.black,
+                    ),
                   ),
                   sh5,
                   Row(
@@ -83,9 +87,11 @@ class RepoContainer extends StatelessWidget {
                       sw5,
                       Text(
                         rating,
-                        style: h5.copyWith(color: themeController.isDarkMode.value
-                            ? AppColors.white
-                            : AppColors.black,),
+                        style: h5.copyWith(
+                          color: themeController.isDarkMode.value
+                              ? AppColors.white
+                              : AppColors.black,
+                        ),
                       ),
                       sw12,
                       Image.asset(
@@ -95,9 +101,11 @@ class RepoContainer extends StatelessWidget {
                       sw5,
                       Text(
                         timestamp,
-                        style: h5.copyWith(color: themeController.isDarkMode.value
-                            ? AppColors.white
-                            : AppColors.black,),
+                        style: h5.copyWith(
+                          color: themeController.isDarkMode.value
+                              ? AppColors.white
+                              : AppColors.black,
+                        ),
                       ),
                     ],
                   ),
